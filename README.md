@@ -1,8 +1,8 @@
 # VPNGate SSTP 家宽节点（edgetunnel 链式代理） 🚀
 
-自动抓取 [VPN Gate](https://www.vpngate.net/) 的 SSTP 家宽/机房节点，调用检测 Worker 逐个验证可用性，按国家分组、标注住宅/机房，生成可直接通过 **URL 自动轮换** 的节点清单。**每 30 分钟自动更新一次。**
+自动抓取 [VPN Gate](https://www.vpngate.net) 的 SSTP 家宽/机房节点，调用检测 Worker 逐个验证可用性，按国家分组、标注住宅/机房，生成可直接通过 **URL 自动轮换** 的节点清单。**每 12 小时自动更新一次。**
 
-> 核心价值：VPN Gate 的 SSTP 节点 30 分钟就换一批，手动测试筛选太痛苦。本仓库把它全自动了——你只需把 `nodes.txt` 的网址填进 edgetunnel 后台一次，之后节点每 30 分钟自动换，零手动。
+> 核心价值：VPN Gate 的 SSTP 节点 12 小时就换一批，手动测试筛选太痛苦。本仓库把它全自动了——你只需把 `nodes.txt` 的网址填进 edgetunnel 后台一次，之后节点每 12 小时自动换，零手动。
 
 ---
 
@@ -10,7 +10,7 @@
 
 ~~~text
 VPN Gate 官方源
-      │  (每 30 分钟，GitHub Actions 定时抓取)
+      │  (每 12 小时，GitHub Actions 定时抓取)
       ▼
 筛选 SSTP 节点 → 去重
       │
@@ -28,7 +28,7 @@ VPN Gate 官方源
 edgetunnel 后台「自定义优选IP」框填 https://…/nodes.txt
       │  edgetunnel 每次生成订阅时自动 fetch → 解析 $sstp:// → 套链式代理
       ▼
-客户端订阅 edgetunnel 订阅 → 使用 SSTP 家宽节点 (每 30 分钟自动换)
+客户端订阅 edgetunnel 订阅 → 使用 SSTP 家宽节点 (每 12 小时自动换)
 ~~~
 
 ---
@@ -56,7 +56,7 @@ edgetunnel 后台「自定义优选IP」框填 https://…/nodes.txt
 
 ### 第 2 步：部署检测 Worker（CheckSocks5）
 
-1. 打开 https://github.com/lsh8848/cm-Workers-CheckSocks5 ，点 **Fork**
+1. 打开 https://github.com/cmliu/CF-Workers-CheckSocks5 ，点 **Fork**
 2. 进 Cloudflare 控制台 → Workers 和 Pages → 创建 → 创建 Worker
 3. 把 `_worker.js` 的全部内容粘贴进编辑器，点「部署」
 4. 记下这个 Worker 的域名，形如 `https://xxx.你的用户名.workers.dev`
@@ -104,7 +104,7 @@ https://你的GitHub用户名.github.io/仓库名/nodes.txt
 3. 点保存
 4. 客户端刷新订阅 → 每次刷新 edgetunnel 都重新拉取一次 nodes.txt，节点自动更新
 
-> 原理：`nodes.txt` 是纯节点行版本（无注释头），每行 `入口域名:443#国家-住宅-01$sstp://vpn:vpn@节点:端口`。edgetunnel 下次生成订阅时会 fetch 这个网址、逐行解析成优选入口 + 链式代理指令。你只填一次，之后节点每 30 分钟自动换、零手动。
+> 原理：`nodes.txt` 是纯节点行版本（无注释头），每行 `入口域名:443#国家-住宅-01$sstp://vpn:vpn@节点:端口`。edgetunnel 下次生成订阅时会 fetch 这个网址、逐行解析成优选入口 + 链式代理指令。你只填一次，之后节点每 12 小时自动换、零手动。
 
 ---
 
@@ -154,7 +154,7 @@ https://你的GitHub用户名.github.io/仓库名/nodes.txt
 
 ---
 
-*流水线：GitHub Actions（每 30 分钟 cron） → vpngate.py → 检测 Worker → GitHub Pages*
+*流水线：GitHub Actions（每 12 小时 cron） → vpngate.py → 检测 Worker → GitHub Pages*
 
 ---
 
@@ -165,10 +165,10 @@ https://你的GitHub用户名.github.io/仓库名/nodes.txt
 | 项目 | 用途 | 链接 |
 | :--- | :--- | :--- |
 | **cmliu/edgetunnel** | VLESS 代理 + 链式代理，节点最终通过它使用 | https://github.com/cmliu/edgetunnel |
-| **lsh8848/cm-Workers-CheckSocks5** | 检测 Worker：验证 SSTP 节点可用性并读取出口 IP | https://github.com/lsh8848/cm-Workers-CheckSocks5 |
+| **lsh8848/cm-Workers-CheckSocks5** | 检测 Worker：验证 SSTP 节点可用性并读取出口 IP | https://github.com/cmliu/CF-Workers-CheckSocks5 |
 | **fdciabdul/Vpngate-Scraper-API** | VPN Gate 节点数据的 GitHub 镜像（官方源失效时回退） | https://github.com/fdciabdul/Vpngate-Scraper-API |
-| **VPN Gate** | SSTP 节点数据源 | https://www.vpngate.net/ |
-| **Star History** | 提供项目热度曲线图生成服务 | https://star-history.com/ |
+| **VPN Gate** | SSTP 节点数据源 | https://www.vpngate.net |
+| **Star History** | 提供项目热度曲线图生成服务 | https://star-history.com |
 
 ---
 
